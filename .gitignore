@@ -400,3 +400,5 @@ FodyWeavers.xsd
 .claude/
 .antigravity/
 .gemini
+CLAUDE.MD
+.codegraph/

@@ -7,10 +7,10 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["src/Products/InventorySystem.Products.API/InventorySystem.Products.API.csproj", "src/Products/InventorySystem.Products.API/"]
-RUN dotnet restore "src/Products/InventorySystem.Products.API/InventorySystem.Products.API.csproj"
+COPY ["src/InventorySystem.Products/InventorySystem.Products.API/InventorySystem.Products.API.csproj", "src/InventorySystem.Products/InventorySystem.Products.API/"]
+RUN dotnet restore "src/InventorySystem.Products/InventorySystem.Products.API/InventorySystem.Products.API.csproj"
 COPY . .
-WORKDIR "/src/src/Products/InventorySystem.Products.API"
+WORKDIR "/src/src/InventorySystem.Products/InventorySystem.Products.API"
 RUN dotnet build "./InventorySystem.Products.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
