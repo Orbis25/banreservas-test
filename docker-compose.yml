@@ -6,7 +6,6 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./infra/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     ports:
       - "5432:5432"
     healthcheck:
@@ -67,6 +66,16 @@ services:
       redis:
         condition: service_healthy
       rabbitmq:
+        condition: service_healthy
+
+  identity-api:
+    build:
+      context: .
+      dockerfile: src/InventorySystem.Identity/InventorySystem.Identity.Api/Dockerfile
+    ports:
+      - "5003:8080"
+    depends_on:
+      postgres:
         condition: service_healthy
 
 volumes:
