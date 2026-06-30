@@ -7,9 +7,17 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="FoundationKit" Version="4.1.0" />
+      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
       <Folder Include="EF\Configurations\" />
-      <Folder Include="EF\Presistence\" />
-      <Folder Include="Extensions\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\InventorySystem.Identity.Application\InventorySystem.Identity.Application.csproj" />
+      <ProjectReference Include="..\InventorySystem.Identity.Domain\InventorySystem.Identity.Domain.csproj" />
     </ItemGroup>
 
 </Project>
