@@ -1,6 +1,8 @@
 using FoundationKit.Extensions;
 using InventorySystem.Identity.Domain.Models;
+using InventorySystem.Identity.Domain.Options;
 using InventorySystem.Identity.Infrastructure.EF.Presistence;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -51,19 +53,19 @@ public static class ProgramExtensions
 
         private IServiceCollection AddCorsWithConfiguration(IConfiguration configuration)
         {
-            // var corsOptions = new CorsConfigOptions();
-            // configuration.GetSection(CorsConfigOptions.Cors).Bind(corsOptions);
-            //
-            // var originsAllowed = corsOptions.OriginsAllowed ?? new List<string> { "*" };
-            // var methodsAllowed = corsOptions.MethodsAllowed ?? new List<string> { "*" };
-            //
-            // var corsPolicy = new CorsPolicyBuilder()
-            //     .WithOrigins(string.Join(",", originsAllowed))
-            //     .AllowAnyHeader()
-            //     .WithMethods(string.Join(",", methodsAllowed))
-            //     .Build();
-            //
-            // services.AddCors(c => c.AddDefaultPolicy(corsPolicy));
+            var corsOptions = new CorsConfigOptions();
+            configuration.GetSection(CorsConfigOptions.Cors).Bind(corsOptions);
+
+            var originsAllowed = corsOptions.OriginsAllowed ?? new List<string> { "*" };
+            var methodsAllowed = corsOptions.MethodsAllowed ?? new List<string> { "*" };
+
+            var corsPolicy = new CorsPolicyBuilder()
+                .WithOrigins(string.Join(",", originsAllowed))
+                .AllowAnyHeader()
+                .WithMethods(string.Join(",", methodsAllowed))
+                .Build();
+
+            services.AddCors(c => c.AddDefaultPolicy(corsPolicy));
 
             return services;
         }
@@ -95,20 +97,13 @@ public static class ProgramExtensions
                     Description = "JWT token"
                 });
 
-                // config.AddSecurityRequirement(new Func<OpenApiDocument, OpenApiSecurityRequirement>
-                // {
-                //     {
-                //         new OpenApiSecurityScheme
-                //         {
-                //             Reference = new OpenApiReference
-                //             {
-                //                 Type = ReferenceType.SecurityScheme,
-                //                 Id = "Bearer"
-                //             }
-                //         },
-                //         Array.Empty<string>()
-                //     }
-                // });
+                config.AddSecurityRequirement(doc => new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecuritySchemeReference("Bearer", doc),
+                        new List<string>()
+                    }
+                });
             });
 
             return services;
