@@ -21,4 +21,9 @@
         <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\InventorySystem.Common\InventorySystem.Common.Utilities\InventorySystem.Common.Utilities.csproj" />
+      <ProjectReference Include="..\InventorySystem.Identity.Domain\InventorySystem.Identity.Domain.csproj" />
+    </ItemGroup>
+
 </Project>

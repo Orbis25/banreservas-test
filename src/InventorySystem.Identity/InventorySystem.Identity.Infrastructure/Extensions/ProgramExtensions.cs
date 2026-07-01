@@ -1,18 +1,22 @@
 using FoundationKit.Extensions;
+using InventorySystem.Identity.Application.Services;
 using InventorySystem.Identity.Domain.Models;
 using InventorySystem.Identity.Domain.Options;
-using InventorySystem.Identity.Infrastructure.EF.Presistence;
+using InventorySystem.Identity.Infrastructure.EF.Persistence;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi;
 
 namespace InventorySystem.Identity.Infrastructure.Extensions;
 
 public static class ProgramExtensions
 {
+
     extension(IServiceCollection services)
     {
         public IServiceCollection AddInfrastructure(IConfiguration configuration, string xmlDoc)
@@ -22,7 +26,23 @@ public static class ProgramExtensions
                 .AddPersistence(configuration)
                 .AddIdentityConfig()
                 .AddCorsWithConfiguration(configuration)
-                .AddFoundationKitIdentity<User, ApplicationDbContext>();
+                .AddFoundationKitIdentity<User, ApplicationDbContext>()
+                .ConfigureOptions(configuration)
+                .ConfigureServices();
+
+            return services;
+        }
+
+        private IServiceCollection ConfigureServices()
+        {
+            services.AddScoped<IUserService, UserService>();
+
+            return services;
+        }
+
+        private IServiceCollection ConfigureOptions(IConfiguration configuration)
+        {
+            services.Configure<SeedOptions>(configuration.GetSection(SeedOptions.Seed));
 
             return services;
         }
@@ -110,4 +130,36 @@ public static class ProgramExtensions
         }
 
     }
+    
+    extension(WebApplication app)
+    {
+        public void UseInfrastructure()
+        {
+            app.ExecuteSeeds();
+            app.UseHttpsRedirection();
+
+            app.UseCors();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.MapControllers();
+
+            app.Run();
+        }
+
+        private void ExecuteSeeds()
+        {
+            try
+            {
+                using var scope = app.Services.CreateScope();
+                scope.ServiceProvider.GetRequiredService<IUserService>().SeedAsync().GetAwaiter().GetResult();
+            }
+            catch (Exception e)
+            {
+                app.Logger.LogError(e, "Error while executing seeds");
+            }
+        }
+    }
+
 }

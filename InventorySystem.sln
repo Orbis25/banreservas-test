@@ -34,6 +34,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventorySystem.Identity.Do
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventorySystem.Identity.Infrastructure", "src\InventorySystem.Identity\InventorySystem.Identity.Infrastructure\InventorySystem.Identity.Infrastructure.csproj", "{003261B8-59FF-487A-951D-84C6C7396623}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InventorySystem.Common", "InventorySystem.Common", "{2B4F2E4D-D810-438B-AA3F-51D0730BEE10}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventorySystem.Common.Utilities", "src\InventorySystem.Common\InventorySystem.Common.Utilities\InventorySystem.Common.Utilities.csproj", "{DE0CA768-4380-4740-8502-DA66D0733A78}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -96,6 +100,10 @@ Global
 		{003261B8-59FF-487A-951D-84C6C7396623}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{003261B8-59FF-487A-951D-84C6C7396623}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{003261B8-59FF-487A-951D-84C6C7396623}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE0CA768-4380-4740-8502-DA66D0733A78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE0CA768-4380-4740-8502-DA66D0733A78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE0CA768-4380-4740-8502-DA66D0733A78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE0CA768-4380-4740-8502-DA66D0733A78}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{432A4B2B-D8BA-448E-9E32-42AB763CC65F} = {07DDD7F7-C810-44C7-AB18-0FCD0810490E}
@@ -112,5 +120,6 @@ Global
 		{39D382C9-BBBC-4108-8317-457781FE0F5A} = {C7311B5F-B40A-4B34-9A74-D9E3A754DA7F}
 		{B3F0FB4F-5665-45C8-81F0-D9A3947F84F5} = {C7311B5F-B40A-4B34-9A74-D9E3A754DA7F}
 		{003261B8-59FF-487A-951D-84C6C7396623} = {C7311B5F-B40A-4B34-9A74-D9E3A754DA7F}
+		{DE0CA768-4380-4740-8502-DA66D0733A78} = {2B4F2E4D-D810-438B-AA3F-51D0730BEE10}
 	EndGlobalSection
 EndGlobal
