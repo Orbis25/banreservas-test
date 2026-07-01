@@ -8,6 +8,7 @@ namespace InventorySystem.Identity.Infrastructure.EF.Persistence;
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
     : FoundationKitIdentityDbContext<User>(options)
 {
+    
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

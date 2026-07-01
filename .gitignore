@@ -402,3 +402,5 @@ FodyWeavers.xsd
 .gemini
 CLAUDE.MD
 .codegraph/
+*/bin
+*/debug

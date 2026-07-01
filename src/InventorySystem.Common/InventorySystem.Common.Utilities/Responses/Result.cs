@@ -16,12 +16,12 @@ public record Result
 
     protected Result() {}
 
-    private Result(List<ErrorMessage> messages)
+    protected Result(List<ErrorMessage> messages)
     {
         Errors = messages.ToImmutableList();
     }
 
-    private Result(bool notFound, string? message = null)
+    protected Result(bool notFound, string? message = null)
     {
         IsNotFound = notFound;
         Message = message;
@@ -46,5 +46,15 @@ public record Result<T> : Result
         Data = data;
     }
 
+    private Result(bool notFound, string? message) : base(notFound, message) {}
+
+    private Result(List<ErrorMessage> messages) : base(messages) {}
+
     public static Result<T> Success(T data) => new(data);
+
+    public new static Result<T> Failure(List<ErrorMessage> messages)
+        => new(messages);
+
+    public new static Result<T> NotFound(string? message = null)
+        => new(true, message);
 }

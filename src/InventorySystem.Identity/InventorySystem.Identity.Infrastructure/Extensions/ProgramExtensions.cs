@@ -1,8 +1,11 @@
+using System.Text;
 using FoundationKit.Extensions;
 using InventorySystem.Identity.Application.Services;
 using InventorySystem.Identity.Domain.Models;
 using InventorySystem.Identity.Domain.Options;
 using InventorySystem.Identity.Infrastructure.EF.Persistence;
+using InventorySystem.Identity.Infrastructure.ExceptionsHandlers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
@@ -10,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 
 namespace InventorySystem.Identity.Infrastructure.Extensions;
@@ -28,7 +32,8 @@ public static class ProgramExtensions
                 .AddCorsWithConfiguration(configuration)
                 .AddFoundationKitIdentity<User, ApplicationDbContext>()
                 .ConfigureOptions(configuration)
-                .ConfigureServices();
+                .ConfigureServices()
+                .ConfigureJwt(configuration);
 
             return services;
         }
@@ -36,6 +41,7 @@ public static class ProgramExtensions
         private IServiceCollection ConfigureServices()
         {
             services.AddScoped<IUserService, UserService>();
+            services.AddExceptionHandler<GlobalExceptionHandler>();
 
             return services;
         }
@@ -43,6 +49,29 @@ public static class ProgramExtensions
         private IServiceCollection ConfigureOptions(IConfiguration configuration)
         {
             services.Configure<SeedOptions>(configuration.GetSection(SeedOptions.Seed));
+            services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.Jwt));
+
+            return services;
+        }
+
+        private IServiceCollection ConfigureJwt(IConfiguration configuration)
+        {
+            var jwtOptions = configuration.GetSection(JwtOptions.Jwt).Get<JwtOptions>()!;
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = jwtOptions.Issuer,
+                        ValidAudience = jwtOptions.Audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key))
+                    };
+                });
 
             return services;
         }
@@ -135,7 +164,11 @@ public static class ProgramExtensions
     {
         public void UseInfrastructure()
         {
+            app.MigrateDatabase();
             app.ExecuteSeeds();
+
+            app.UseExceptionHandler();
+
             app.UseHttpsRedirection();
 
             app.UseCors();
@@ -146,6 +179,12 @@ public static class ProgramExtensions
             app.MapControllers();
 
             app.Run();
+        }
+
+        private void MigrateDatabase()
+        {
+            using var scope = app.Services.CreateScope();
+            scope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.Migrate();
         }
 
         private void ExecuteSeeds()
